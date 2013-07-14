@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 
 namespace Netflix
 {
@@ -50,7 +51,13 @@ namespace Netflix
 
 		private static void Usage ()
 		{
-			Logger.Info("NetflixReview importMovies [path] / importReviews [directory]");
+			var builder = new StringBuilder ();
+			builder.AppendLine ("Options :").
+				AppendLine (" - importMovies [path to file] (import to sqlite)").
+					AppendLine (" - importReview [path to directory] (import to sqlite)").
+					AppendLine (" - transform [path to directory] (sqlite scripts)");
+
+			Logger.Info (builder.ToString ());
 		}
 
 		private static void ImportMovies()
@@ -78,7 +85,6 @@ namespace Netflix
 			Importer.TransformReviews(path);
 		}
 
-		
 		private static void TransformReviews()
 		{
 			Importer.TransformReviews();

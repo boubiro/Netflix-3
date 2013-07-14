@@ -91,5 +91,10 @@ namespace Netflix
 			Insert(review);
 		}
 	}
+
+	public class ReviewDatabaseLayerMono
+	{
+
+	}
 }
 

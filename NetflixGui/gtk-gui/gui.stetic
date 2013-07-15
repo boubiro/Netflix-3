@@ -116,7 +116,7 @@
                 <property name="MemberName" />
                 <property name="Spacing">6</property>
                 <child>
-                  <widget class="Gtk.ProgressBar" id="reviewProgressbar1">
+                  <widget class="Gtk.ProgressBar" id="movieProgressbar">
                     <property name="MemberName" />
                   </widget>
                   <packing>
@@ -150,6 +150,7 @@
                     <property name="Type">TextOnly</property>
                     <property name="Label" translatable="yes">Import</property>
                     <property name="UseUnderline">True</property>
+                    <signal name="Clicked" handler="OnMovieImportButtonClicked" />
                   </widget>
                   <packing>
                     <property name="PackType">End</property>
@@ -167,6 +168,7 @@
                     <property name="Type">TextOnly</property>
                     <property name="Label" translatable="yes">Cancel</property>
                     <property name="UseUnderline">True</property>
+                    <signal name="Clicked" handler="OnMovieCancelButtonClicked" />
                   </widget>
                   <packing>
                     <property name="PackType">End</property>
@@ -425,6 +427,7 @@
                     <property name="Type">TextOnly</property>
                     <property name="Label" translatable="yes">Import</property>
                     <property name="UseUnderline">True</property>
+                    <signal name="Clicked" handler="OnReviewImportButtonClicked" />
                   </widget>
                   <packing>
                     <property name="PackType">End</property>
@@ -442,6 +445,7 @@
                     <property name="Type">TextOnly</property>
                     <property name="Label" translatable="yes">Cancel</property>
                     <property name="UseUnderline">True</property>
+                    <signal name="Clicked" handler="OnReviewCancelButtonClicked" />
                   </widget>
                   <packing>
                     <property name="PackType">End</property>

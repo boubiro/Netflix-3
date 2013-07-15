@@ -1,19 +1,25 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Netflix/Review.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="NetflixGui/MainWindow.cs">
     <Files>
       <File FileName="Netflix/Main.cs" Line="75" Column="21" />
       <File FileName="Netflix/Review.cs" Line="100" Column="37" />
-      <File FileName="Netflix/Movie.cs" Line="23" Column="1" />
       <File FileName="Netflix/SQLite.cs" Line="351" Column="1" />
-      <File FileName="Netflix/Importer.cs" Line="84" Column="1" />
+      <File FileName="Netflix/Importer.cs" Line="34" Column="25" />
+      <File FileName="NetflixGui/Main.cs" Line="1" Column="1" />
+      <File FileName="NetflixGui/MainWindow.cs" Line="119" Column="1" />
+      <File FileName="NetflixGui/NetflixPresenter.cs" Line="83" Column="17" />
+      <File FileName="NetflixGui/INetflixView.cs" Line="57" Column="35" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/home/shareff/Dev/Mono/Netflix/Netflix/Importer.cs" line="58" />
       <Breakpoint file="/home/shareff/Dev/Mono/Netflix/Netflix/Importer.cs" line="242" />
-      <Breakpoint file="/home/shareff/Dev/Netflix/Netflix/Importer.cs" line="79" />
+      <Breakpoint file="/home/shareff/Dev/Netflix/Netflix/Importer.cs" line="888" />
+      <Breakpoint file="/home/shareff/Dev/Netflix/NetflixGui/MainWindow.cs" line="34" />
+      <Breakpoint file="/home/shareff/Dev/Netflix/NetflixGui/MainWindow.cs" line="119" />
+      <Breakpoint file="/home/shareff/Dev/Netflix/NetflixGui/MainWindow.cs" line="42" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

@@ -18,24 +18,143 @@ public partial class MainWindow: Gtk.Window, INetflixView
 	#region INetflixView implementation
 
 	public event EventHandler ImportMovies;
+	public event EventHandler CancelMoviesImportation;
 
 	public event EventHandler ImportReviews;
+	public event EventHandler CancelReviewsImportation;
 
 	public event EventHandler CreateScripts;
 
-	public string MovieSource { get; set; }
+	#region Properties
 
-	public string MovieTarget { get; set; }
+	public string MovieSource 
+	{
+		get 
+		{
+			return filechooserMovieSource.Filename; 
+		} 
+	}
 
-	public string ReviewSource { get; set; }
+	public string MovieTarget 
+	{
+		get 
+		{
+			return filechooserMovieTarget.Filename; 
+		} 
+	}
 
-	public string ReviewTarget { get; set; }
+	public string ReviewSource 
+	{
+		get 
+		{
+			return filechooserReviewSource.CurrentFolder; 
+		} 
+	}
 
-	public int ChunkSize { get; set; }
+	public string ReviewTarget
+	{ 
+		get
+		{
+			return filechooserReviewTarget.Filename; 
+		} 
+	}
 
-	public int StartFile {get;set;}
+	public int ChunkSize 
+	{
+		get
+		{
+			int chunk;
+			if (int.TryParse (chunkSizeEntry.Text, out chunk)) 
+			{
+				return chunk;
+			}
+
+			return 200;
+		}
+	}
+
+	public int StartFile 
+	{ 
+		get 
+		{
+			int start;
+			if (int.TryParse(startFileEntry1.Text, out start))
+			{
+				return start;
+			}
+
+			return 0;
+		} 
+	}
 
 	#endregion
 
+	public void MoviesImported ()
+	{
+	}
 
+	public void MovieProgress (int progress, string message)
+	{
+		//movieProgressbar.Adjustment = progress;
+	}
+
+	public void ReviewsImported ()
+	{
+	}
+
+	public void ReviewProgress (int progress, string message)
+	{
+	}
+
+	public void DisplayError (string message)
+	{
+	}
+
+	#endregion
+
+	#region Movie callbacks
+	
+	private void OnMovieImportButtonClicked (object sender, EventArgs e)
+	{
+		if (!string.IsNullOrEmpty (MovieSource) && !string.IsNullOrEmpty (MovieTarget)) 
+		{
+			if (ImportMovies != null) 
+			{
+				ImportMovies (this, EventArgs.Empty);
+			}
+		}
+	}
+
+	private void OnMovieCancelButtonClicked (object sender, EventArgs e)
+	{
+		if (CancelMoviesImportation != null) 
+		{
+			CancelMoviesImportation(this, EventArgs.Empty);
+		}
+	}
+
+	#endregion
+
+	#region Review callbacks
+
+	private void OnReviewImportButtonClicked (object sender, EventArgs e)
+	{
+		if (!string.IsNullOrEmpty (MovieTarget) && !string.IsNullOrEmpty (MovieTarget)) 
+		{
+			if (CancelReviewsImportation != null) 
+			{
+				CancelReviewsImportation (this, EventArgs.Empty);
+			}
+		}
+	}
+
+	private void OnReviewCancelButtonClicked (object sender, EventArgs e)
+	{
+		if (ImportReviews != null) 
+		{
+			ImportReviews(this, EventArgs.Empty);
+		}
+	}
+
+	#endregion
 }

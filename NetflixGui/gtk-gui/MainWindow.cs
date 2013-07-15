@@ -11,7 +11,7 @@ public partial class MainWindow
 	private global::Gtk.Label movieSourceLabel;
 	private global::Gtk.Label movieTargetLabel;
 	private global::Gtk.Statusbar movieStatusbar;
-	private global::Gtk.ProgressBar reviewProgressbar1;
+	private global::Gtk.ProgressBar movieProgressbar;
 	private global::Gtk.HBox movieHbox;
 	private global::Gtk.Button movieImportButton;
 	private global::Gtk.Button movieCancelButton;
@@ -61,6 +61,7 @@ public partial class MainWindow
 		global::Gtk.Table.TableChild w1 = ((global::Gtk.Table.TableChild)(this.movieTable [this.filechooserMovieSource]));
 		w1.LeftAttach = ((uint)(1));
 		w1.RightAttach = ((uint)(2));
+		w1.XPadding = ((uint)(3));
 		w1.YOptions = ((global::Gtk.AttachOptions)(4));
 		// Container child movieTable.Gtk.Table+TableChild
 		this.filechooserReviewTarget = new global::Gtk.FileChooserButton (global::Mono.Unix.Catalog.GetString ("Sélectionner un fichier"), ((global::Gtk.FileChooserAction)(0)));
@@ -71,6 +72,7 @@ public partial class MainWindow
 		w2.BottomAttach = ((uint)(2));
 		w2.LeftAttach = ((uint)(1));
 		w2.RightAttach = ((uint)(2));
+		w2.XPadding = ((uint)(3));
 		w2.YOptions = ((global::Gtk.AttachOptions)(4));
 		// Container child movieTable.Gtk.Table+TableChild
 		this.movieSourceLabel = new global::Gtk.Label ();
@@ -100,10 +102,10 @@ public partial class MainWindow
 		this.movieStatusbar.Name = "movieStatusbar";
 		this.movieStatusbar.Spacing = 6;
 		// Container child movieStatusbar.Gtk.Box+BoxChild
-		this.reviewProgressbar1 = new global::Gtk.ProgressBar ();
-		this.reviewProgressbar1.Name = "reviewProgressbar1";
-		this.movieStatusbar.Add (this.reviewProgressbar1);
-		global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.movieStatusbar [this.reviewProgressbar1]));
+		this.movieProgressbar = new global::Gtk.ProgressBar ();
+		this.movieProgressbar.Name = "movieProgressbar";
+		this.movieStatusbar.Add (this.movieProgressbar);
+		global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.movieStatusbar [this.movieProgressbar]));
 		w6.Position = 1;
 		this.movieMainVbox.Add (this.movieStatusbar);
 		global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.movieMainVbox [this.movieStatusbar]));
@@ -127,6 +129,7 @@ public partial class MainWindow
 		w8.Position = 1;
 		w8.Expand = false;
 		w8.Fill = false;
+		w8.Padding = ((uint)(3));
 		// Container child movieHbox.Gtk.Box+BoxChild
 		this.movieCancelButton = new global::Gtk.Button ();
 		this.movieCancelButton.CanFocus = true;
@@ -327,5 +330,9 @@ public partial class MainWindow
 		this.DefaultHeight = 258;
 		this.Show ();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler (this.OnDeleteEvent);
+		this.movieCancelButton.Clicked += new global::System.EventHandler (this.OnMovieCancelButtonClicked);
+		this.movieImportButton.Clicked += new global::System.EventHandler (this.OnMovieImportButtonClicked);
+		this.reviewCancelButton.Clicked += new global::System.EventHandler (this.OnReviewCancelButtonClicked);
+		this.reviewImportButton.Clicked += new global::System.EventHandler (this.OnReviewImportButtonClicked);
 	}
 }

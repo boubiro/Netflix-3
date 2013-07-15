@@ -11,6 +11,247 @@ using System.Linq;
 
 namespace Netflix
 {
+	public abstract class AbstractImporter
+	{
+		protected bool CancelationPending { get; set; }
+
+		public string Source { get; set; }
+		public string Target { get; set; }
+
+		public Action<int, string> ReportProgress;
+
+		public abstract void Import();
+
+		public virtual void Cancel ()
+		{
+			CancelationPending = true;
+		}
+
+		public virtual void Report (double progress, string message)
+		{
+			if (ReportProgress != null) 
+			{
+				ReportProgress((int)progress, message);
+			}
+		}
+	}
+
+	public sealed class MovieImporter : AbstractImporter
+	{
+		public override void Import ()
+		{
+			if (!string.IsNullOrEmpty(Source))
+			{
+				if (File.Exists (Source)) 
+				{
+					// On compte le nombre de lignes pour pouvoir faire un ReportProgress
+					double lineCount = File.ReadLines(Source).Count();
+
+					// Pour prendre en compte la sauvegarde dans le progress... hum
+					lineCount += lineCount * 0.2; 
+
+					// On cleare tout avant d'importer
+					var movieDb = new MovieDatabaseLayer(Target);
+					movieDb.CleanTable();
+
+					var counter = 0.0;
+					double progress = 0;
+
+					var movies = new List<Movie>();
+					using(var reader = File.OpenText(Source))
+					{
+						string line;
+
+						// on choppe tous les films un par un on stocke dans une liste temporaire
+						while((line = reader.ReadLine()) != null)
+						{
+							var splits = line.Split(',');
+							var movie = new Movie
+							{
+								Id = int.Parse(splits[0]),
+								Title = splits[2]
+							};
+
+							int date;
+							// y'a des Date NULL des fois, du coup on "try parse"
+							if (int.TryParse(splits[1], out date))
+							{
+								movie.Date = date;
+							}
+
+							movies.Add(movie);
+
+							// Progress
+							counter++;
+							progress = counter/lineCount * 100;
+							Report(progress, "Reading file");
+
+							if (CancelationPending)
+							{
+								Report(0, "Importation cancelled");
+
+								return;
+							}
+						}
+					}
+
+					Report(progress, "Saving movies");
+
+					// on save tout le bloc
+					movieDb.Save(movies);
+
+					Report (100, "Import finished !");
+				}
+				else
+				{
+					throw new ArgumentException(string.Format("File {0} does not exist", Source));
+				}
+			}
+			else 
+			{
+				throw new ArgumentNullException("Source can not be null or empty");
+			}
+		}
+	}
+
+	public sealed class ReviewImporter : AbstractImporter
+	{
+		private int _fileCount;
+
+		public int ChunkSize { get; set; }
+		public int StartFile { get; set; }
+
+		public override void Import()
+		{
+			if (!string.IsNullOrEmpty(Source))
+			{
+				if (Directory.Exists (Source)) 
+				{
+					// on crée l'objet qui gère la base
+					var reviewDb = new ReviewDatabaseLayer();
+
+					// on choppe tous les fichiers du dossier
+					var allFiles = Directory.GetFiles(Source);
+					var files = new List<string>();
+
+					// pour calculer la progression
+					var totalFileCount = allFiles.Length;
+
+					// juste un trie parce que j'ai du le faire en plusieurs fois mmm
+					if (StartFile > 0)
+					{
+						foreach(var f in allFiles)
+						{
+							if (CheckFile(f))
+							{
+								files.Add(f);
+							}
+						}
+					}
+
+					allFiles = null;
+
+					// On découpe la liste de fichier...
+					var splits = files.Split(ChunkSize);
+
+					// On fait le boulot en parallèle, mais pour chaque groupe de fichiers
+					foreach(var groupOfFiles in splits)
+					{
+					    var bag = new ConcurrentBag<Review>();
+						Parallel.ForEach(groupOfFiles, currentFile =>
+						{
+							GetReview(currentFile, bag);
+						});
+
+						// On a mis les reviews dans un bag en // mais on fait la sauvegarder sur un thread, c'est El Goulot
+						var watch = new Stopwatch();
+						watch.Start();
+
+						var message = string.Format("Saving {0} reviews", bag.Count);
+						Logger.Info(message);
+
+						// Progress
+						var progress = ((float)_fileCount) / totalFileCount * 100;
+						Report(progress, message);
+
+						reviewDb.Save(bag);
+
+						watch.Stop();
+
+						var savedMessage = string.Format("Saved in {0} ms", watch.Elapsed);
+
+						Report (progress, savedMessage);
+						Logger.Info(savedMessage);
+					}
+				}
+				else
+				{
+					throw new ArgumentException(string.Format("File {0} does not exist", Source));
+				}
+			}
+			else 
+			{
+				throw new ArgumentNullException("Source can not be null or empty");
+			}
+		}
+
+		private void GetReview (string path, ConcurrentBag<Review> bag)
+		{
+			using (var reader = File.OpenText(path)) 
+			{
+				var line = reader.ReadLine();
+				var movieId = int.Parse(line.Substring(0, line.Length - 1));
+
+				GetReview(movieId, reader, bag);
+			}
+
+			var count = Interlocked.Increment(ref _fileCount);
+
+			Logger.Info(string.Format("{0} review done : {1}", count, path));
+		}
+
+		private void GetReview (int movieId, StreamReader reader, ConcurrentBag<Review> bag)
+		{
+			var watch = new Stopwatch();
+			watch.Start();
+
+			var counter = 0;
+
+			string line;
+			while ((line = reader.ReadLine()) != null) 
+			{
+				var splits = line.Split(',');
+				var review = new Review
+				{
+					MovieId = movieId,
+					UserId = int.Parse(splits[0]),
+					Note = int.Parse(splits[1]),
+					Date = DateTime.Parse(splits[2])
+				};
+
+				bag.Add(review);
+
+				counter++;
+			}
+
+			watch.Stop();
+			Logger.Info(string.Format("Movie {0} imported, {1} reviews added in {2} ms ({3} in bag)", movieId, counter, watch.Elapsed.TotalMilliseconds, bag.Count));
+		}
+
+		private bool CheckFile (string file)
+		{
+			var splits = Path.GetFileName(file).Split ('_', '.');
+			int fileId;
+
+			if (splits.Length > 1 && int.TryParse (splits [1], out fileId)) 
+			{
+				return fileId > StartFile;
+			}
+
+			return false;
+		}
+	}
+
 	public class Importer
 	{
 		private const string DefaultReviewDirectory = "/home/shareff/Dev/Data/training_set";
@@ -288,7 +529,6 @@ namespace Netflix
 
 //		CREATE INDEX "Review_MovieId" on "Review"("MovieId");
 //CREATE INDEX "Review_UserId" on "Review"("UserId");
-
 
 		private static void CreateScript (ConcurrentBag<Review> bag)
 		{

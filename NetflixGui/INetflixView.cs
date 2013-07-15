@@ -5,7 +5,11 @@ namespace NetflixGui
 	public interface INetflixView
 	{
 		event EventHandler ImportMovies;
+		event EventHandler CancelMoviesImportation;
+
 		event EventHandler ImportReviews;
+		event EventHandler CancelReviewsImportation;
+
 		event EventHandler CreateScripts;
 
 		/// <summary>
@@ -43,6 +47,14 @@ namespace NetflixGui
 		/// Starting MovieId.
 		/// </value>
 		int StartFile { get; }
+
+		void MoviesImported ();		
+		void MovieProgress (int progress, string message);
+
+		void ReviewsImported ();		
+		void ReviewProgress (int progress, string message);
+
+		void DisplayError(string message);
 	}
 }
 

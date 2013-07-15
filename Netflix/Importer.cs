@@ -84,7 +84,19 @@ namespace Netflix
 					var reviewDb = new ReviewDatabaseLayer();
 
 					// on choppe tous les fichiers du dossier
-					var files = Directory.GetFiles(directory);
+					var allFiles = Directory.GetFiles(directory);
+					var files = new List<string>();
+
+					// juste un trie parce que j'ai du le faire en plusieurs fois mmm
+					foreach(var f in allFiles)
+					{
+						if (CheckFile(f))
+						{
+							files.Add(f);
+						}
+					}
+
+					allFiles = null;
 
 					// On découpe la liste de fichier...
 					var splits = files.Split(200);
@@ -228,6 +240,7 @@ namespace Netflix
 					var allFiles = Directory.GetFiles(directory);
 					var files = new List<string>();
 
+					// juste un trie parce que j'ai du le faire en plusieurs fois mmm
 					foreach(var f in allFiles)
 					{
 						if (CheckFile(f))
@@ -303,7 +316,7 @@ namespace Netflix
 
 			if (splits.Length > 1 && int.TryParse (splits [1], out fileId)) 
 			{
-				return fileId > 8800;
+				return fileId > 8900;
 			}
 
 			return false;

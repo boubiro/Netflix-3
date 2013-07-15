@@ -1,18 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Netflix/SQLite.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Netflix/Review.cs">
     <Files>
-      <File FileName="Netflix/Main.cs" Line="78" Column="26" />
-      <File FileName="Netflix/Review.cs" Line="97" Column="3" />
+      <File FileName="Netflix/Main.cs" Line="75" Column="21" />
+      <File FileName="Netflix/Review.cs" Line="100" Column="37" />
       <File FileName="Netflix/Movie.cs" Line="23" Column="1" />
-      <File FileName="Netflix/SQLite.cs" Line="1962" Column="3" />
-      <File FileName="Netflix/Importer.cs" Line="276" Column="7" />
+      <File FileName="Netflix/SQLite.cs" Line="351" Column="1" />
+      <File FileName="Netflix/Importer.cs" Line="84" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/home/shareff/Dev/Mono/Netflix/Netflix/Importer.cs" line="58" />
       <Breakpoint file="/home/shareff/Dev/Mono/Netflix/Netflix/Importer.cs" line="242" />
+      <Breakpoint file="/home/shareff/Dev/Netflix/Netflix/Importer.cs" line="79" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

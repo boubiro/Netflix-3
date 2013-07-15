@@ -1,14 +1,15 @@
 using System;
 using SQLite;
 using System.Collections.Generic;
+using Mono.Data.Sqlite;
 
 namespace Netflix
 {
 	public class Review
 	{
-		[Indexed]
+		//[Indexed]
 		public int MovieId { get; set; }
-		[Indexed]
+		//[Indexed]
 		public int UserId { get; set; }
 
 		public DateTime Date { get; set; }
@@ -94,7 +95,11 @@ namespace Netflix
 
 	public class ReviewDatabaseLayerMono
 	{
+		public ReviewDatabaseLayerMono ()
+		{
+			//var conn = new SqliteConnection("/home/shareff/Dev/Mono/Netflix"
 
+		}
 	}
 }
 

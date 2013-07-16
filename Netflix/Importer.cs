@@ -172,6 +172,14 @@ namespace Netflix
 						var message = string.Format("Saving {0} reviews", bag.Count);
 						Logger.Info(message);
 
+						// On cancel avant le save, qui est suuper long
+						if (CancelationPending)
+						{
+							Report(0, "Importation cancelled");
+
+							return;
+						}
+
 						// Progress
 						var progress = ((float)_fileCount) / totalFileCount * 100;
 						Report(progress, message);

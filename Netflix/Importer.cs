@@ -54,13 +54,15 @@ namespace Netflix
 					var movieDb = new MovieDatabaseLayer(Target);
 					movieDb.CleanTable();
 
-					var counter = 0.0;
+					//var counter = 0.0;
 					double progress = 0;
 
 					var movies = new List<Movie>();
 					using(var reader = File.OpenText(Source))
 					{
 						string line;
+
+						Report(progress, "Reading file");
 
 						// on choppe tous les films un par un on stocke dans une liste temporaire
 						while((line = reader.ReadLine()) != null)
@@ -82,9 +84,9 @@ namespace Netflix
 							movies.Add(movie);
 
 							// Progress
-							counter++;
-							progress = counter/lineCount * 100;
-							Report(progress, "Reading file");
+//							counter++;
+//							progress = counter/lineCount * 100;
+//							Report(progress, "Reading file");
 
 							if (CancelationPending)
 							{
@@ -95,7 +97,7 @@ namespace Netflix
 						}
 					}
 
-					Report(progress, "Saving movies");
+					Report(50, "Saving movies");
 
 					// on save tout le bloc
 					movieDb.Save(movies);

@@ -21,6 +21,8 @@ namespace NetflixGui
 			_view.ImportReviews += OnImportReviews;
 			_view.CancelReviewsImportation += OnCancelReviewsImportation;
 
+			AppDomain.CurrentDomain.UnhandledException += (sender, e) => view.DisplayError(e.ExceptionObject.ToString());
+
 		}
 
 		#region Movies
@@ -55,7 +57,7 @@ namespace NetflixGui
 				StartFile = _view.StartFile
 			};
 
-			Run (_movieImporter, () => _view.ReviewsImported(), (progress, message) => _view.ReviewProgress(progress, message));
+			Run (_reviewImporter, () => _view.ReviewsImported(), (progress, message) => _view.ReviewProgress(progress, message));
 		}
 
 		private void OnCancelReviewsImportation (object sender, EventArgs e)
@@ -70,7 +72,10 @@ namespace NetflixGui
 			var worker = new BackgroundWorker();
 			worker.WorkerReportsProgress = true;
 
-			importer.ReportProgress += (progress, message) => worker.ReportProgress(progress, message);
+			importer.ReportProgress += (progress, message) =>
+			{
+				worker.ReportProgress(progress, message);
+			};
 
 			worker.ProgressChanged += (sender, e) => reportProgress(e.ProgressPercentage, e.UserState.ToString());
 

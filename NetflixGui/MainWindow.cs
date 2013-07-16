@@ -10,7 +10,7 @@ public partial class MainWindow: Gtk.Window, INetflixView
 
 		new NetflixPresenter(this);
 	}
-	
+		
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
 	{
 		Application.Quit ();
@@ -49,7 +49,7 @@ public partial class MainWindow: Gtk.Window, INetflixView
 	{
 		get 
 		{
-			return filechooserReviewSource.CurrentFolder; 
+			return filechooserReviewSource.Filename; 
 		} 
 	}
 
@@ -93,23 +93,31 @@ public partial class MainWindow: Gtk.Window, INetflixView
 
 	public void MoviesImported ()
 	{
+		ReviewProgress(100, "Movies imported");
 	}
 
 	public void MovieProgress (int progress, string message)
 	{
-		//movieProgressbar.Adjustment = progress;
+		movieProgressbar.Adjustment.Value = progress;
+		movieStatusbar.Pop(1);
+		movieStatusbar.Push(1, message);
 	}
 
 	public void ReviewsImported ()
 	{
+		ReviewProgress(100, "Reviews imported");
 	}
 
 	public void ReviewProgress (int progress, string message)
 	{
+		reviewProgressbar.Adjustment.Value = progress;
+		reviewStatusbar.Pop(1);
+		reviewStatusbar.Push(1, message);
 	}
 
 	public void DisplayError (string message)
 	{
+		var dialog = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, message);
 	}
 
 	#endregion
@@ -146,20 +154,20 @@ public partial class MainWindow: Gtk.Window, INetflixView
 
 	private void OnReviewImportButtonClicked (object sender, EventArgs e)
 	{
-		if (!string.IsNullOrEmpty (MovieTarget) && !string.IsNullOrEmpty (MovieTarget)) 
+		if (!string.IsNullOrEmpty (ReviewTarget) && !string.IsNullOrEmpty (ReviewSource)) 
 		{
-			if (CancelReviewsImportation != null) 
+			if (ImportReviews != null) 
 			{
-				CancelReviewsImportation (this, EventArgs.Empty);
+				ImportReviews (this, EventArgs.Empty);
 			}
 		}
 	}
 
 	private void OnReviewCancelButtonClicked (object sender, EventArgs e)
 	{
-		if (ImportReviews != null) 
+		if (CancelReviewsImportation != null) 
 		{
-			ImportReviews(this, EventArgs.Empty);
+			CancelReviewsImportation(this, EventArgs.Empty);
 		}
 	}
 

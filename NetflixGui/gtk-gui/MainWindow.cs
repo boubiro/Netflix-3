@@ -129,6 +129,7 @@ public partial class MainWindow
 		// Container child movieStatusbar.Gtk.Box+BoxChild
 		this.movieProgressbar = new global::Gtk.ProgressBar ();
 		this.movieProgressbar.Name = "movieProgressbar";
+		this.movieProgressbar.Text = "";
 		this.movieStatusbar.Add (this.movieProgressbar);
 		global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.movieStatusbar [this.movieProgressbar]));
 		w8.Position = 1;
@@ -315,6 +316,7 @@ public partial class MainWindow
 		// Container child reviewStatusbar.Gtk.Box+BoxChild
 		this.reviewProgressbar = new global::Gtk.ProgressBar ();
 		this.reviewProgressbar.Name = "reviewProgressbar";
+		this.reviewProgressbar.Text = "";
 		this.reviewStatusbar.Add (this.reviewProgressbar);
 		global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.reviewStatusbar [this.reviewProgressbar]));
 		w25.Position = 1;

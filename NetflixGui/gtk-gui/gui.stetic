@@ -147,14 +147,12 @@
                 <child>
                   <widget class="Gtk.ProgressBar" id="movieProgressbar">
                     <property name="MemberName" />
+                    <property name="Text" translatable="yes" />
                   </widget>
                   <packing>
                     <property name="Position">1</property>
                     <property name="AutoSize">True</property>
                   </packing>
-                </child>
-                <child>
-                  <placeholder />
                 </child>
               </widget>
               <packing>
@@ -453,14 +451,12 @@
                 <child>
                   <widget class="Gtk.ProgressBar" id="reviewProgressbar">
                     <property name="MemberName" />
+                    <property name="Text" translatable="yes" />
                   </widget>
                   <packing>
                     <property name="Position">1</property>
                     <property name="AutoSize">True</property>
                   </packing>
-                </child>
-                <child>
-                  <placeholder />
                 </child>
               </widget>
               <packing>

@@ -1,0 +1,6 @@
+Commande sqlite à envoyer sur la base Review.db (nom à définir :o)
+
+pragma page_size=4096;
+pragma temp_store=memory;
+pragma synchronous=off;
+pragma journal_mode=MEMORY;

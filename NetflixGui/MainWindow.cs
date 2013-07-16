@@ -7,6 +7,8 @@ public partial class MainWindow: Gtk.Window, INetflixView
 	public MainWindow (): base (Gtk.WindowType.Toplevel)
 	{
 		Build ();
+
+		new NetflixPresenter(this);
 	}
 	
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
@@ -32,14 +34,14 @@ public partial class MainWindow: Gtk.Window, INetflixView
 		get 
 		{
 			return filechooserMovieSource.Filename; 
-		} 
+		}
 	}
 
 	public string MovieTarget 
 	{
 		get 
 		{
-			return filechooserMovieTarget.Filename; 
+			return movieTargetEntry.Text; 
 		} 
 	}
 
@@ -55,7 +57,7 @@ public partial class MainWindow: Gtk.Window, INetflixView
 	{ 
 		get
 		{
-			return filechooserReviewTarget.Filename; 
+			return reviewTargetEntry.Text; 
 		} 
 	}
 
@@ -133,6 +135,11 @@ public partial class MainWindow: Gtk.Window, INetflixView
 		}
 	}
 
+	private void OnMovieTargetBrowseButtonClicked (object sender, EventArgs e)
+	{
+		OpenFileChooser(filename => movieTargetEntry.Text = filename);
+	}
+
 	#endregion
 
 	#region Review callbacks
@@ -156,5 +163,29 @@ public partial class MainWindow: Gtk.Window, INetflixView
 		}
 	}
 
+	private void OnReviewTargetBrowseButtonClicked (object sender, EventArgs e)
+	{
+		OpenFileChooser(filename => reviewTargetEntry.Text = filename);
+	}
+
 	#endregion
+
+	private void OpenFileChooser(Action<string> action)
+	{
+		var fileChooser = new FileChooserDialog ("Sélectionner un fichier",
+		                            this,
+		                            FileChooserAction.Save,
+		                            "Cancel", ResponseType.Cancel,
+		                            "Choose", ResponseType.Accept);
+
+		if (fileChooser.Run () == (int)ResponseType.Accept) 
+		{			
+			if (!string.IsNullOrEmpty (fileChooser.Filename)) 
+			{
+				action(fileChooser.Filename);
+			}
+		}
+
+		fileChooser.Destroy();
+	}
 }

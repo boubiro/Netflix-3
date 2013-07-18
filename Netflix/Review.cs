@@ -2,14 +2,24 @@ using System;
 using SQLite;
 using System.Collections.Generic;
 using Mono.Data.Sqlite;
+using System.Linq;
 
 namespace Netflix
 {
-	public class Review
+	public interface IReview 
 	{
-		//[Indexed]
+		int MovieId { get; set; }
+		int UserId { get; set; }
+		DateTime Date { get; set; }
+		int Note { get; set; }
+	}
+
+	[Table("Review")]
+	public class Review : IReview
+	{
+		[Indexed]
 		public int MovieId { get; set; }
-		//[Indexed]
+		[Indexed]
 		public int UserId { get; set; }
 
 		public DateTime Date { get; set; }
@@ -17,88 +27,93 @@ namespace Netflix
 		public int Note { get; set; }
 	}
 
-	public class ReviewDatabaseLayerAsync : SQLiteAsyncConnection
-	{
-		private const string DefaultPath = "reviews.db";
+	[Table("Review")]
+	public class NonIndexedReview : IReview
+	{	
+		public int MovieId { get; set; }
+	
+		public int UserId { get; set; }
 
-		public ReviewDatabaseLayerAsync (string path = DefaultPath) : base(path)
-		{
-			CreateTableAsync<Review>();
-		}
+		public DateTime Date { get; set; }
 
-		public IEnumerable<Review> GetReviewsByUserId(int userId)
-		{
-			return Table<Review>().Where(review => review.UserId == userId).ToListAsync().Result;
-		}
-
-		public IEnumerable<Review> GetReviewsByMovieId(int movie)
-		{
-			return Table<Review>().Where(review => review.MovieId == movie).ToListAsync().Result;
-		}
-
-		public void CleanTable()
-		{
-			DropTableAsync<Review>().ContinueWith(task => CreateTableAsync<Review>());
-		}
-
-		public void Save (IEnumerable<Review> reviews)
-		{
-			var conn = GetConnection ();
-			using (conn.Lock ()) 
-			{
-				conn.InsertAll (reviews);
-			}
-
-			//InsertAllAsync(reviews);
-		}
-
-		public void Save (Review review)
-		{
-			InsertAsync(review);
-		}
+		public int Note { get; set; }
 	}
 
-	public class ReviewDatabaseLayer : SQLiteConnection
+//
+//	public class ReviewDatabaseLayerAsync : SQLiteAsyncConnection
+//	{
+//		private const string DefaultPath = "reviews.db";
+//
+//		public ReviewDatabaseLayerAsync (string path = DefaultPath) : base(path)
+//		{
+//			CreateTableAsync<Review>();
+//		}
+//
+//		public IEnumerable<Review> GetReviewsByUserId(int userId)
+//		{
+//			return Table<Review>().Where(review => review.UserId == userId).ToListAsync().Result;
+//		}
+//
+//		public IEnumerable<Review> GetReviewsByMovieId(int movie)
+//		{
+//			return Table<Review>().Where(review => review.MovieId == movie).ToListAsync().Result;
+//		}
+//
+//		public void CleanTable()
+//		{
+//			DropTableAsync<Review>().ContinueWith(task => CreateTableAsync<Review>());
+//		}
+//
+//		public void Save (IEnumerable<Review> reviews)
+//		{
+//			var conn = GetConnection ();
+//			using (conn.Lock ()) 
+//			{
+//				conn.InsertAll (reviews);
+//			}
+//
+//			//InsertAllAsync(reviews);
+//		}
+//
+//		public void Save (Review review)
+//		{
+//			InsertAsync(review);
+//		}
+//	}
+
+	public class ReviewDatabaseLayer<T> : SQLiteConnection
+		where T : IReview, new()
 	{
 		private const string DefaultPath = "reviews.db";
 
 		public ReviewDatabaseLayer (string path = DefaultPath) : base(path)
 		{
-			CreateTable<Review>();
+			CreateTable<T>();
 		}
 
-		public IEnumerable<Review> GetReviewsByUserId(int userId)
+		public IEnumerable<T> GetReviewsByUserId(int userId)
 		{
-			return Table<Review>().Where(review => review.UserId == userId);
+			return Table<T>().Where(review => review.UserId == userId);
 		}
 
-		public IEnumerable<Review> GetReviewsByMovieId(int movie)
+		public IEnumerable<T> GetReviewsByMovieId(int movie)
 		{
-			return Table<Review>().Where(review => review.MovieId == movie);
+			return Table<T>().Where(review => review.MovieId == movie);
 		}
 
 		public void CleanTable()
 		{
-			DeleteAll<Review>();
+			DeleteAll<T>();
 		}
 
-		public void Save (IEnumerable<Review> reviews)
+		public void Save (IEnumerable<T> reviews)
 		{
 			InsertAll(reviews);
 		}
 
-		public void Save (Review review)
+		public void Save (T review)
 		{
 			Insert(review);
-		}
-	}
-
-	public class ReviewDatabaseLayerMono
-	{
-		public ReviewDatabaseLayerMono ()
-		{
-			//var conn = new SqliteConnection("/home/shareff/Dev/Mono/Netflix"
-
 		}
 	}
 }

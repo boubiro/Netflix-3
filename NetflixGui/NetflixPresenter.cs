@@ -21,6 +21,8 @@ namespace NetflixGui
 			_view.ImportReviews += OnImportReviews;
 			_view.CancelReviewsImportation += OnCancelReviewsImportation;
 
+			_view.ReviewQuery += OnReviewQuery;
+
 			AppDomain.CurrentDomain.UnhandledException += (sender, e) => view.DisplayError(e.ExceptionObject.ToString());
 
 		}
@@ -63,6 +65,21 @@ namespace NetflixGui
 		private void OnCancelReviewsImportation (object sender, EventArgs e)
 		{
 			_reviewImporter.Cancel();
+		}
+
+		private void OnReviewQuery (int movieId, int userId)
+		{
+			var reviewDb = new ReviewDatabaseLayer<Review> ();
+
+			var reviews = reviewDb.GetReviewsByMovieId (movieId);
+
+			// First we clear old values
+			_view.ClearReview();
+
+			foreach (var review in reviews) 
+			{
+				_view.SetReview(review.MovieId, review.UserId, review.Date, review.Note);
+			}
 		}
 
 		#endregion

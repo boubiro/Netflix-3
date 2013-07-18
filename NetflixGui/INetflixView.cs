@@ -12,6 +12,8 @@ namespace NetflixGui
 
 		event EventHandler CreateScripts;
 
+		event Action<int, int> ReviewQuery;
+
 		/// <summary>
 		/// Source file to import movies.
 		/// </summary>
@@ -55,6 +57,9 @@ namespace NetflixGui
 		void ReviewProgress (int progress, string message);
 
 		void DisplayError(string message);
+
+		void ClearReview();
+		void SetReview (int movieId, int userId, DateTime date, int note);
 	}
 }
 

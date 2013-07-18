@@ -36,6 +36,19 @@ public partial class MainWindow
 	private global::Gtk.Button reviewImportButton;
 	private global::Gtk.Button reviewCancelButton;
 	private global::Gtk.Label reviewTabTitle;
+	private global::Gtk.VBox reviewQueryVbox;
+	private global::Gtk.HBox selectReviewHbox;
+	private global::Gtk.Label reviewTargetForQueryLabel;
+	private global::Gtk.Entry reviewTargetForQueryEntry;
+	private global::Gtk.Button reviewTargetForQueryBrowseButton;
+	private global::Gtk.HBox selectMovieHbox;
+	private global::Gtk.Label movieIdLabel;
+	private global::Gtk.SpinButton movieIdEntry;
+	private global::Gtk.Button selectButton;
+	private global::Gtk.ScrolledWindow GtkScrolledWindow;
+	private global::Gtk.NodeView queryResultListview;
+	private global::Gtk.Statusbar queryStatusbar;
+	private global::Gtk.Label testQueryTab;
 	
 	protected virtual void Build ()
 	{
@@ -48,7 +61,7 @@ public partial class MainWindow
 		this.tabpanel = new global::Gtk.Notebook ();
 		this.tabpanel.CanFocus = true;
 		this.tabpanel.Name = "tabpanel";
-		this.tabpanel.CurrentPage = 1;
+		this.tabpanel.CurrentPage = 2;
 		// Container child tabpanel.Gtk.Notebook+NotebookChild
 		this.movieMainVbox = new global::Gtk.VBox ();
 		this.movieMainVbox.Name = "movieMainVbox";
@@ -370,6 +383,119 @@ public partial class MainWindow
 		this.reviewTabTitle.LabelProp = global::Mono.Unix.Catalog.GetString ("Review");
 		this.tabpanel.SetTabLabel (this.reviewMainVbox, this.reviewTabTitle);
 		this.reviewTabTitle.ShowAll ();
+		// Container child tabpanel.Gtk.Notebook+NotebookChild
+		this.reviewQueryVbox = new global::Gtk.VBox ();
+		this.reviewQueryVbox.Name = "reviewQueryVbox";
+		this.reviewQueryVbox.Spacing = 6;
+		// Container child reviewQueryVbox.Gtk.Box+BoxChild
+		this.selectReviewHbox = new global::Gtk.HBox ();
+		this.selectReviewHbox.Name = "selectReviewHbox";
+		this.selectReviewHbox.Spacing = 6;
+		// Container child selectReviewHbox.Gtk.Box+BoxChild
+		this.reviewTargetForQueryLabel = new global::Gtk.Label ();
+		this.reviewTargetForQueryLabel.Name = "reviewTargetForQueryLabel";
+		this.reviewTargetForQueryLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("Target database :");
+		this.selectReviewHbox.Add (this.reviewTargetForQueryLabel);
+		global::Gtk.Box.BoxChild w31 = ((global::Gtk.Box.BoxChild)(this.selectReviewHbox [this.reviewTargetForQueryLabel]));
+		w31.Position = 0;
+		w31.Expand = false;
+		w31.Fill = false;
+		// Container child selectReviewHbox.Gtk.Box+BoxChild
+		this.reviewTargetForQueryEntry = new global::Gtk.Entry ();
+		this.reviewTargetForQueryEntry.CanFocus = true;
+		this.reviewTargetForQueryEntry.Name = "reviewTargetForQueryEntry";
+		this.reviewTargetForQueryEntry.IsEditable = true;
+		this.reviewTargetForQueryEntry.InvisibleChar = '●';
+		this.selectReviewHbox.Add (this.reviewTargetForQueryEntry);
+		global::Gtk.Box.BoxChild w32 = ((global::Gtk.Box.BoxChild)(this.selectReviewHbox [this.reviewTargetForQueryEntry]));
+		w32.Position = 1;
+		// Container child selectReviewHbox.Gtk.Box+BoxChild
+		this.reviewTargetForQueryBrowseButton = new global::Gtk.Button ();
+		this.reviewTargetForQueryBrowseButton.CanFocus = true;
+		this.reviewTargetForQueryBrowseButton.Name = "reviewTargetForQueryBrowseButton";
+		this.reviewTargetForQueryBrowseButton.UseUnderline = true;
+		this.reviewTargetForQueryBrowseButton.Label = global::Mono.Unix.Catalog.GetString ("Browse");
+		this.selectReviewHbox.Add (this.reviewTargetForQueryBrowseButton);
+		global::Gtk.Box.BoxChild w33 = ((global::Gtk.Box.BoxChild)(this.selectReviewHbox [this.reviewTargetForQueryBrowseButton]));
+		w33.Position = 2;
+		w33.Expand = false;
+		w33.Fill = false;
+		this.reviewQueryVbox.Add (this.selectReviewHbox);
+		global::Gtk.Box.BoxChild w34 = ((global::Gtk.Box.BoxChild)(this.reviewQueryVbox [this.selectReviewHbox]));
+		w34.Position = 0;
+		w34.Expand = false;
+		w34.Fill = false;
+		// Container child reviewQueryVbox.Gtk.Box+BoxChild
+		this.selectMovieHbox = new global::Gtk.HBox ();
+		this.selectMovieHbox.Name = "selectMovieHbox";
+		this.selectMovieHbox.Spacing = 6;
+		// Container child selectMovieHbox.Gtk.Box+BoxChild
+		this.movieIdLabel = new global::Gtk.Label ();
+		this.movieIdLabel.Name = "movieIdLabel";
+		this.movieIdLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("Movie Id :");
+		this.selectMovieHbox.Add (this.movieIdLabel);
+		global::Gtk.Box.BoxChild w35 = ((global::Gtk.Box.BoxChild)(this.selectMovieHbox [this.movieIdLabel]));
+		w35.Position = 0;
+		w35.Expand = false;
+		w35.Fill = false;
+		// Container child selectMovieHbox.Gtk.Box+BoxChild
+		this.movieIdEntry = new global::Gtk.SpinButton (0, 30000, 1);
+		this.movieIdEntry.CanFocus = true;
+		this.movieIdEntry.Name = "movieIdEntry";
+		this.movieIdEntry.Adjustment.PageIncrement = 10;
+		this.movieIdEntry.ClimbRate = 1;
+		this.movieIdEntry.Numeric = true;
+		this.selectMovieHbox.Add (this.movieIdEntry);
+		global::Gtk.Box.BoxChild w36 = ((global::Gtk.Box.BoxChild)(this.selectMovieHbox [this.movieIdEntry]));
+		w36.Position = 1;
+		// Container child selectMovieHbox.Gtk.Box+BoxChild
+		this.selectButton = new global::Gtk.Button ();
+		this.selectButton.CanFocus = true;
+		this.selectButton.Name = "selectButton";
+		this.selectButton.UseUnderline = true;
+		this.selectButton.Label = global::Mono.Unix.Catalog.GetString ("Select");
+		this.selectMovieHbox.Add (this.selectButton);
+		global::Gtk.Box.BoxChild w37 = ((global::Gtk.Box.BoxChild)(this.selectMovieHbox [this.selectButton]));
+		w37.PackType = ((global::Gtk.PackType)(1));
+		w37.Position = 2;
+		w37.Expand = false;
+		w37.Fill = false;
+		this.reviewQueryVbox.Add (this.selectMovieHbox);
+		global::Gtk.Box.BoxChild w38 = ((global::Gtk.Box.BoxChild)(this.reviewQueryVbox [this.selectMovieHbox]));
+		w38.Position = 1;
+		w38.Expand = false;
+		w38.Fill = false;
+		// Container child reviewQueryVbox.Gtk.Box+BoxChild
+		this.GtkScrolledWindow = new global::Gtk.ScrolledWindow ();
+		this.GtkScrolledWindow.Name = "GtkScrolledWindow";
+		this.GtkScrolledWindow.ShadowType = ((global::Gtk.ShadowType)(1));
+		// Container child GtkScrolledWindow.Gtk.Container+ContainerChild
+		this.queryResultListview = new global::Gtk.NodeView ();
+		this.queryResultListview.CanFocus = true;
+		this.queryResultListview.Name = "queryResultListview";
+		this.queryResultListview.Reorderable = true;
+		this.GtkScrolledWindow.Add (this.queryResultListview);
+		this.reviewQueryVbox.Add (this.GtkScrolledWindow);
+		global::Gtk.Box.BoxChild w40 = ((global::Gtk.Box.BoxChild)(this.reviewQueryVbox [this.GtkScrolledWindow]));
+		w40.Position = 2;
+		// Container child reviewQueryVbox.Gtk.Box+BoxChild
+		this.queryStatusbar = new global::Gtk.Statusbar ();
+		this.queryStatusbar.Name = "queryStatusbar";
+		this.queryStatusbar.Spacing = 6;
+		this.reviewQueryVbox.Add (this.queryStatusbar);
+		global::Gtk.Box.BoxChild w41 = ((global::Gtk.Box.BoxChild)(this.reviewQueryVbox [this.queryStatusbar]));
+		w41.Position = 3;
+		w41.Expand = false;
+		w41.Fill = false;
+		this.tabpanel.Add (this.reviewQueryVbox);
+		global::Gtk.Notebook.NotebookChild w42 = ((global::Gtk.Notebook.NotebookChild)(this.tabpanel [this.reviewQueryVbox]));
+		w42.Position = 2;
+		// Notebook tab
+		this.testQueryTab = new global::Gtk.Label ();
+		this.testQueryTab.Name = "testQueryTab";
+		this.testQueryTab.LabelProp = global::Mono.Unix.Catalog.GetString ("Test review query");
+		this.tabpanel.SetTabLabel (this.reviewQueryVbox, this.testQueryTab);
+		this.testQueryTab.ShowAll ();
 		this.Add (this.tabpanel);
 		if ((this.Child != null)) {
 			this.Child.ShowAll ();
@@ -384,5 +510,7 @@ public partial class MainWindow
 		this.reviewTargetBrowseButton.Clicked += new global::System.EventHandler (this.OnReviewTargetBrowseButtonClicked);
 		this.reviewCancelButton.Clicked += new global::System.EventHandler (this.OnReviewCancelButtonClicked);
 		this.reviewImportButton.Clicked += new global::System.EventHandler (this.OnReviewImportButtonClicked);
+		this.reviewTargetForQueryBrowseButton.Clicked += new global::System.EventHandler (this.OnReviewTargetForQueryBrowseButtonClicked);
+		this.selectButton.Clicked += new global::System.EventHandler (this.OnSelectButtonClicked);
 	}
 }

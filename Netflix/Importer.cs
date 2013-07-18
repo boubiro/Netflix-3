@@ -130,7 +130,7 @@ namespace Netflix
 				if (Directory.Exists (Source)) 
 				{
 					// on crée l'objet qui gère la base
-					var reviewDb = new ReviewDatabaseLayer();
+					var reviewDb = new ReviewDatabaseLayer<NonIndexedReview>(Target);
 
 					// on choppe tous les fichiers du dossier
 					var allFiles = Directory.GetFiles(Source);
@@ -159,7 +159,7 @@ namespace Netflix
 					// On fait le boulot en parallèle, mais pour chaque groupe de fichiers
 					foreach(var groupOfFiles in splits)
 					{
-					    var bag = new ConcurrentBag<Review>();
+					    var bag = new ConcurrentBag<NonIndexedReview>();
 						Parallel.ForEach(groupOfFiles, currentFile =>
 						{
 							GetReview(currentFile, bag);
@@ -205,7 +205,7 @@ namespace Netflix
 			}
 		}
 
-		private void GetReview (string path, ConcurrentBag<Review> bag)
+		private void GetReview (string path, ConcurrentBag<NonIndexedReview> bag)
 		{
 			using (var reader = File.OpenText(path)) 
 			{
@@ -220,7 +220,7 @@ namespace Netflix
 			Logger.Info(string.Format("{0} review done : {1}", count, path));
 		}
 
-		private void GetReview (int movieId, StreamReader reader, ConcurrentBag<Review> bag)
+		private void GetReview (int movieId, StreamReader reader, ConcurrentBag<NonIndexedReview> bag)
 		{
 			var watch = new Stopwatch();
 			watch.Start();
@@ -231,7 +231,7 @@ namespace Netflix
 			while ((line = reader.ReadLine()) != null) 
 			{
 				var splits = line.Split(',');
-				var review = new Review
+				var review = new NonIndexedReview
 				{
 					MovieId = movieId,
 					UserId = int.Parse(splits[0]),
@@ -332,7 +332,7 @@ namespace Netflix
 				if (Directory.Exists (directory)) 
 				{
 					// on crée l'objet qui gère la base
-					var reviewDb = new ReviewDatabaseLayer();
+					var reviewDb = new ReviewDatabaseLayer<NonIndexedReview>();
 
 					// on choppe tous les fichiers du dossier
 					var allFiles = Directory.GetFiles(directory);
@@ -355,7 +355,7 @@ namespace Netflix
 					// On fait le boulot en parallèle, mais pour chaque groupe de fichiers
 					foreach(var groupOfFiles in splits)
 					{
-					    var bag = new ConcurrentBag<Review>();
+					    var bag = new ConcurrentBag<NonIndexedReview>();
 						Parallel.ForEach(groupOfFiles, currentFile =>
 						{
 							GetReview(currentFile, bag);
@@ -392,7 +392,7 @@ namespace Netflix
 			}
 		}
 
-		private static void GetReview (string path, ReviewDatabaseLayer reviewDb)
+		private static void GetReview (string path, ReviewDatabaseLayer<NonIndexedReview> reviewDb)
 		{
 			using (var reader = File.OpenText(path)) 
 			{
@@ -407,7 +407,7 @@ namespace Netflix
 			Logger.Info(string.Format("{0} review done : {1}", count, path));
 		}
 
-		private static void GetReview (int movieId, StreamReader reader, ReviewDatabaseLayer reviewDb)
+		private static void GetReview (int movieId, StreamReader reader, ReviewDatabaseLayer<NonIndexedReview> reviewDb)
 		{
 			var watch = new Stopwatch ();
 			watch.Start ();
@@ -434,7 +434,7 @@ namespace Netflix
 			}
 		}
 
-		private static void GetReview (string path, ConcurrentBag<Review> bag)
+		private static void GetReview (string path, ConcurrentBag<NonIndexedReview> bag)
 		{
 			using (var reader = File.OpenText(path)) 
 			{
@@ -449,7 +449,7 @@ namespace Netflix
 			Logger.Info(string.Format("{0} review done : {1}", count, path));
 		}
 
-		private static void GetReview (int movieId, StreamReader reader, ConcurrentBag<Review> bag)
+		private static void GetReview (int movieId, StreamReader reader, ConcurrentBag<NonIndexedReview> bag)
 		{
 			var watch = new Stopwatch();
 			watch.Start();
@@ -460,7 +460,7 @@ namespace Netflix
 			while ((line = reader.ReadLine()) != null) 
 			{
 				var splits = line.Split(',');
-				var review = new Review
+				var review = new NonIndexedReview
 				{
 					MovieId = movieId,
 					UserId = int.Parse(splits[0]),
@@ -511,7 +511,7 @@ namespace Netflix
 						var watch = new Stopwatch();
 						watch.Start();
 
-					    var bag = new ConcurrentBag<Review>();
+					    var bag = new ConcurrentBag<NonIndexedReview>();
 						Parallel.ForEach(groupOfFiles, currentFile =>
 						{
 							GetReview(currentFile, bag);
@@ -540,7 +540,7 @@ namespace Netflix
 //		CREATE INDEX "Review_MovieId" on "Review"("MovieId");
 //CREATE INDEX "Review_UserId" on "Review"("UserId");
 
-		private static void CreateScript (ConcurrentBag<Review> bag)
+		private static void CreateScript (ConcurrentBag<NonIndexedReview> bag)
 		{
 			var builder = new StringBuilder();
 			

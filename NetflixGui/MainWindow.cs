@@ -4,9 +4,13 @@ using NetflixGui;
 
 public partial class MainWindow: Gtk.Window, INetflixView
 {	
+	private ListStore _model;
+
 	public MainWindow (): base (Gtk.WindowType.Toplevel)
 	{
 		Build ();
+
+		InitTreeview();
 
 		new NetflixPresenter(this);
 	}
@@ -26,6 +30,8 @@ public partial class MainWindow: Gtk.Window, INetflixView
 	public event EventHandler CancelReviewsImportation;
 
 	public event EventHandler CreateScripts;
+
+	public event Action<int, int> ReviewQuery;
 
 	#region Properties
 
@@ -98,9 +104,13 @@ public partial class MainWindow: Gtk.Window, INetflixView
 
 	public void MovieProgress (int progress, string message)
 	{
-		movieProgressbar.Adjustment.Value = progress;
-		movieStatusbar.Pop(1);
-		movieStatusbar.Push(1, message);
+		Application.Invoke ((sender, arg) =>
+		{
+			movieProgressbar.Adjustment.Value = progress;
+			movieStatusbar.Pop (1);
+			movieStatusbar.Push (1, message);
+		}
+		);
 	}
 
 	public void ReviewsImported ()
@@ -110,14 +120,57 @@ public partial class MainWindow: Gtk.Window, INetflixView
 
 	public void ReviewProgress (int progress, string message)
 	{
-		reviewProgressbar.Adjustment.Value = progress;
-		reviewStatusbar.Pop(1);
-		reviewStatusbar.Push(1, message);
+		Application.Invoke ((sender, arg) =>
+		{
+			reviewProgressbar.Adjustment.Value = progress;
+			reviewStatusbar.Pop (1);
+			reviewStatusbar.Push (1, message);
+		}
+		);
 	}
 
 	public void DisplayError (string message)
 	{
 		var dialog = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, message);
+	}
+
+	private void AddColumn (string title, int place)
+	{
+		var column = new Gtk.TreeViewColumn ();
+		var cell = new Gtk.CellRendererText ();
+ 		column.Title = title;
+		column.PackStart (cell, true); 
+
+		queryResultListview.AppendColumn(column);
+
+		column.AddAttribute(cell, "text", place);
+	}
+
+	private void InitTreeview ()
+	{
+		// Prepare columns
+		AddColumn("MovieId", 0);
+		AddColumn("UserId", 1);
+		AddColumn("Date", 2);
+		AddColumn("Note", 3);
+
+		// Model
+		_model = new ListStore (typeof (string), typeof (string), typeof (string), typeof (string));
+		queryResultListview.Model = _model;
+ 
+	}
+
+	public void SetReview (int movieId, int userId, DateTime date, int note)
+	{
+		Application.Invoke ((sender, args) =>
+		{
+			_model.AppendValues (movieId.ToString(), userId.ToString(), date.ToShortDateString (), note.ToString()); 
+		});
+	}
+
+	public void ClearReview ()
+	{
+		_model.Clear ();
 	}
 
 	#endregion
@@ -174,6 +227,25 @@ public partial class MainWindow: Gtk.Window, INetflixView
 	private void OnReviewTargetBrowseButtonClicked (object sender, EventArgs e)
 	{
 		OpenFileChooser(filename => reviewTargetEntry.Text = filename);
+	}
+
+	private void OnReviewTargetForQueryBrowseButtonClicked (object sender, EventArgs e)
+	{
+		OpenFileChooser(filename => reviewTargetForQueryEntry.Text = filename);
+	}
+
+	private void OnSelectButtonClicked (object sender, EventArgs e)
+	{
+		var dbFile = reviewTargetForQueryEntry.Text;
+		if (!string.IsNullOrEmpty (dbFile)) 
+		{
+			if (ReviewQuery != null)
+			{
+				// j'ai pas fait pour l'user id encore...
+				ReviewQuery(movieIdEntry.ValueAsInt, 0);
+			}
+		}
+
 	}
 
 	#endregion

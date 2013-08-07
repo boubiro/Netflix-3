@@ -23,8 +23,21 @@ namespace Netflix
 		public int UserId { get; set; }
 
 		public DateTime Date { get; set; }
-
+				
 		public int Note { get; set; }
+		
+		public override bool Equals (object obj)
+		{
+			return Equals(obj as Review);
+		}
+		
+		private bool Equals(Review r)
+		{
+			if (r == null)
+				return false;
+			
+			return r.MovieId == this.MovieId;
+		}
 	}
 
 	[Table("Review")]

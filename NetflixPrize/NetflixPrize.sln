@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetflixPrize", "NetflixPrize\NetflixPrize.csproj", "{FDF056D0-44C8-4F9D-B826-98E0B0596803}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetflixPrize", "NetflixPrize.csproj", "{FDF056D0-44C8-4F9D-B826-98E0B0596803}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netflix", "..\Netflix\Netflix.csproj", "{4E32F6AD-FFB6-4B0B-ACEA-58B27FA2C862}"
 EndProject
@@ -21,6 +21,6 @@ Global
 		{FDF056D0-44C8-4F9D-B826-98E0B0596803}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = NetflixPrize\NetflixPrize.csproj
+		StartupItem = NetflixPrize.csproj
 	EndGlobalSection
 EndGlobal

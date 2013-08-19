@@ -6,9 +6,10 @@ namespace NetflixPrize
 {
 	public static class SimilarityCalculator
 	{		
-		public static int CalculateForUser(int user1, int user2)
+		public static float CalculateForUser(int user1, int user2, string dbPath)
 		{
-			var db = new ReviewDatabaseLayer<Review>("");
+			dbPath = "/home/shareff/Dev/Db/reviews.sqlite3";
+			var db = new ReviewDatabaseLayer<Review>(dbPath);
 			
 			var user1Reviews = db.GetReviewsByUserId(user1).ToList();
 			var user2Reviews = db.GetReviewsByUserId(user2).ToList();
@@ -24,9 +25,9 @@ namespace NetflixPrize
 			return Calculate(intersect.Count, filteredUser1Reviews, filteredUser2Reviews, meanUser1, meanUser2);	
 		}
 		
-		public static int CalculateForMovie(int movie1, int movie2)
+		public static float CalculateForMovie(int movie1, int movie2, string dbPath)
 		{
-			var db = new ReviewDatabaseLayer<Review>("");
+			var db = new ReviewDatabaseLayer<Review>(dbPath);
 			
 			var movie1Reviews = db.GetReviewsByMovieId(movie1).ToList();
 			var movie2Reviews = db.GetReviewsByMovieId(movie2).ToList();
@@ -41,7 +42,7 @@ namespace NetflixPrize
 			return Calculate(count, filteredMovie1Reviews, filteredMovie2Reviews, 0, 1);
 		}
 		
-		private static int Calculate(int totalCount, Review[] uno, Review[] dos, int meanUno, int meanDos)
+		private static float Calculate(int totalCount, Review[] uno, Review[] dos, int meanUno, int meanDos)
 		{
 			int sum = 0;
 			for (var i = 0; i < totalCount; i++)
@@ -56,8 +57,7 @@ namespace NetflixPrize
 			var sim = 1 - (float)sum / (8 * totalCount);
 			
 			return sim;	
-		}
-		
+		}		
 	}
 }
 

@@ -41,4 +41,10 @@
     <Compile Include="Similarity.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\Netflix\Netflix.csproj">
+      <Project>{4E32F6AD-FFB6-4B0B-ACEA-58B27FA2C862}</Project>
+      <Name>Netflix</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

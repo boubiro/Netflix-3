@@ -57,7 +57,23 @@ namespace NetflixPrize
 			var sim = 1 - (float)sum / (8 * totalCount);
 			
 			return sim;	
-		}		
+		}
+
+
+		public static float VarianceForMovie(int movie, string dbPath)
+		{
+			var db = new ReviewDatabaseLayer<Review>(dbPath);
+
+			var movieReviews = db.GetReviewsByMovieId(movie).ToList();
+
+			var meanMovie = movieReviews.Sum(r => r.Note) / movieReviews.Count;
+
+			var varMovie = movieReviews.Sum (r => Math.Pow ((r.Note - meanMovie), 2)) / movieReviews.Count;
+
+
+			return varMovie;
+		}
+
 	}
 }
 

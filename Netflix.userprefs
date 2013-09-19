@@ -1,9 +1,9 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="NetflixGui/MainWindow.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="NetflixGui/NetflixPresenter.cs">
     <Files>
       <File FileName="Netflix/Importer.cs" Line="1" Column="1" />
-      <File FileName="NetflixGui/MainWindow.cs" Line="173" Column="3" />
+      <File FileName="NetflixGui/MainWindow.cs" Line="1" Column="1" />
       <File FileName="NetflixGui/NetflixPresenter.cs" Line="76" Column="32" />
       <File FileName="Netflix/Review.cs" Line="1" Column="1" />
       <File FileName="Netflix/SQLite.cs" Line="1" Column="1" />

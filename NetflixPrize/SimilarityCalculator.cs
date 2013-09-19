@@ -8,7 +8,6 @@ namespace NetflixPrize
 	{		
 		public static float CalculateForUser(int user1, int user2, string dbPath)
 		{
-			dbPath = "/home/shareff/Dev/Db/reviews.sqlite3";
 			var db = new ReviewDatabaseLayer<Review>(dbPath);
 			
 			var user1Reviews = db.GetReviewsByUserId(user1).ToList();
@@ -59,7 +58,6 @@ namespace NetflixPrize
 			return sim;	
 		}
 
-
 		public static float VarianceForMovie(int movie, string dbPath)
 		{	int sum = 0;
 			var db = new ReviewDatabaseLayer<Review>(dbPath);
@@ -73,13 +71,10 @@ namespace NetflixPrize
 				sum += diff*diff;
 			}
 
-
 			var varMovie = (float)sum / movieReviews.Count;
-
 
 			return varMovie;
 		}
-
 	}
 }
 

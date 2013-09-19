@@ -27,6 +27,6 @@ Global
 		{FDF056D0-44C8-4F9D-B826-98E0B0596803}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = NetflixPrizeGui\NetflixPrizeGui.csproj
+		StartupItem = NetflixPrize\NetflixPrize.csproj
 	EndGlobalSection
 EndGlobal

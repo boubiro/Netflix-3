@@ -89,6 +89,9 @@ csx
 # Windows Store app package directory
 AppPackages/
 
+# Git
+*.orig
+
 # Others
 [Bb]in
 [Oo]bj

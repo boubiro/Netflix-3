@@ -99,6 +99,9 @@ namespace Netflix
 	{
 		private const string DefaultPath = "reviews.db";
 
+		private const string IntersectMoviesForUsersQuery = "select MovieId from Review where UserId=? and MovieId in (select MovieId from Review where UserId=?)";
+		private const string IntersectUsersForMoviesQuery = "select UserId from Review where MovieId=? and UserId in (select UserId from Review where MovieId=?)";
+
 		public ReviewDatabaseLayer (string path = DefaultPath) : base(path)
 		{
 			CreateTable<T>();
@@ -112,6 +115,16 @@ namespace Netflix
 		public IEnumerable<T> GetReviewsByMovieId(int movie)
 		{
 			return Table<T>().Where(review => review.MovieId == movie);
+		}
+
+		public IEnumerable<int> GetCommonMovies(int user1, int user2)
+		{
+			return Query<int> (IntersectMoviesForUsersQuery, user1, user2);
+		}
+
+		public IEnumerable<int> GetCommonUsers(int movie1, int movie2)
+		{
+			return Query<int> (IntersectUsersForMoviesQuery, movie1, movie2);
 		}
 
 		public void CleanTable()

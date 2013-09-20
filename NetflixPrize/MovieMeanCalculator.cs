@@ -4,6 +4,7 @@ using SQLite;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace NetflixPrize
 {
@@ -13,6 +14,8 @@ namespace NetflixPrize
 		private readonly MovieDatabaseLayer _movieConnection;
 		private readonly MovieMeanConnection _meanConnection;
 
+		public Action<MovieMean> MeanCalculated;
+
 		public MovieMeanCalculator(string reviewPath, string moviePath, string meanPath)
 		{
 			_reviewConnection = new ReviewDatabaseLayer<Review> (reviewPath);
@@ -20,13 +23,13 @@ namespace NetflixPrize
 			_meanConnection = new MovieMeanConnection (meanPath);
 		}
 
-		public IEnumerable<MovieMean> CalculateForAll()
+		public void CalculateForAll()
 		{
 			var sw = new Stopwatch ();
 			sw.Start ();
 
 			var movies = _movieConnection.GetAllMovies ();
-			foreach (var movie in movies) 
+			Parallel.ForEach (movies, movie => 
 			{
 				var reviews = _reviewConnection.GetReviewsByMovieId (movie.Id).ToArray ();
 				if (reviews.Any ()) 
@@ -36,9 +39,12 @@ namespace NetflixPrize
 					var movieMean = new MovieMean { Title = movie.Title, Id = movie.Id, Mean = mean };
 					_meanConnection.Save (movieMean);
 
-					yield return movieMean;
+					if (MeanCalculated != null)
+					{
+						MeanCalculated(movieMean);
+					}
 				}
-			}
+			});
 
 			sw.Stop ();
 			Console.WriteLine ("Calculated {0} means in {1}", movies.Count (), sw.Elapsed);

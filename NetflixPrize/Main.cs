@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 
 namespace NetflixPrize
 {
@@ -8,14 +9,18 @@ namespace NetflixPrize
 		private static string MoviePath = "/home/shareff/Dev/Db/toto.db";
 		private static string MeanPath = "/home/shareff/Dev/Db/mean.sqlite3";
 
+		private static int _count;
+
 		public static void Main (string[] args)
 		{
 			var calculator = new MovieMeanCalculator (ReviewPath, MoviePath, MeanPath);
 
-			foreach (var mean in calculator.CalculateForAll()) 
+			calculator.MeanCalculated += (Action<MovieMean>)(mean => 
 			{
-				Console.WriteLine ("{0}({1}) : {2}", mean.Title, mean.Id, mean.Mean);
-			}
+				Console.WriteLine ("{0}({1}) : {2} ({3} mean calculated)", mean.Title, mean.Id, mean.Mean, Interlocked.Increment(ref _count));
+			});
+
+			calculator.CalculateForAll ();
 		}
 	}
 }

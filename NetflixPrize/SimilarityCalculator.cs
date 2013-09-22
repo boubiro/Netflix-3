@@ -4,14 +4,19 @@ using System.Linq;
 
 namespace NetflixPrize
 {
-	public static class SimilarityCalculator
-	{		
-		public static float CalculateForUser(int user1, int user2, string dbPath)
+	public class SimilarityCalculator
+	{	
+		private ReviewDatabaseLayer<Review> _reviewsConnection;
+
+		public SimilarityCalculator(string dbPath)
 		{
-			var db = new ReviewDatabaseLayer<Review>(dbPath);
-			
-			var user1Reviews = db.GetReviewsByUserId(user1).ToList();
-			var user2Reviews = db.GetReviewsByUserId(user2).ToList();
+			_reviewsConnection = new ReviewDatabaseLayer<Review> (dbPath);
+		}	
+
+		public float CalculateForUser(int user1, int user2)
+		{			
+			var user1Reviews = _reviewsConnection.GetReviewsByUserId(user1).ToList();
+			var user2Reviews = _reviewsConnection.GetReviewsByUserId(user2).ToList();
 			
 			var meanUser1 = user1Reviews.Sum(r => r.Note) / user1Reviews.Count;
 			var meanUser2 = user2Reviews.Sum(r => r.Note) / user1Reviews.Count;
@@ -24,12 +29,10 @@ namespace NetflixPrize
 			return Calculate(intersect.Count, filteredUser1Reviews, filteredUser2Reviews, meanUser1, meanUser2);	
 		}
 		
-		public static float CalculateForMovie(int movie1, int movie2, string dbPath)
-		{
-			var db = new ReviewDatabaseLayer<Review>(dbPath);
-			
-			var movie1Reviews = db.GetReviewsByMovieId(movie1).ToList();
-			var movie2Reviews = db.GetReviewsByMovieId(movie2).ToList();
+		public float CalculateForMovie(int movie1, int movie2)
+		{	
+			var movie1Reviews = _reviewsConnection.GetReviewsByMovieId(movie1).ToList();
+			var movie2Reviews = _reviewsConnection.GetReviewsByMovieId(movie2).ToList();
 			
 			var intersect = movie1Reviews.Intersect(movie2Reviews).Select(r => r.UserId).ToList();
 			
@@ -58,11 +61,11 @@ namespace NetflixPrize
 			return sim;	
 		}
 
-		public static float VarianceForMovie(int movie, string dbPath)
-		{	int sum = 0;
-			var db = new ReviewDatabaseLayer<Review>(dbPath);
+		public float VarianceForMovie(int movie)
+		{	
+			int sum = 0;
 
-			var movieReviews = db.GetReviewsByMovieId(movie).ToList();
+			var movieReviews = _reviewsConnection.GetReviewsByMovieId(movie).ToList();
 			var meanMovie = movieReviews.Sum(r => r.Note) / movieReviews.Count;
 
 			for (var i = 0; i< movieReviews.Count; i++) 

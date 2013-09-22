@@ -4,6 +4,7 @@ using Netflix;
 using System.Diagnostics;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NetflixPrize
 {
@@ -12,12 +13,14 @@ namespace NetflixPrize
 		private static string ReviewPath = "/home/shareff/Dev/Db/reviews.sqlite3";
 		private static string MoviePath = "/home/shareff/Dev/Db/toto.db";
 		private static string MeanPath = "/home/shareff/Dev/Db/mean.sqlite3";
+		private static string VariancePath = "/home/shareff/Dev/Db/variance.sqlite3";
 
 		private static int _count;
 
 		public static void Main (string[] args)
 		{
-			new CommonMovie ().GetCommonMovies ();
+			//new CommonMovie ().GetCommonMovies ();
+			CalculateVarianceForAllMovies ();
 		}
 
 		#region MeanCalculator 
@@ -33,6 +36,38 @@ namespace NetflixPrize
 			
 			calculator.CalculateForAll ();
 		}
+
+		#endregion
+
+		#region VarianceCalculator
+
+		private static void CalculateVarianceForAllMovies()
+		{
+			var conn = new VarianceConnection (VariancePath);
+
+			var calculator = new VarianceCalculator (ReviewPath);
+
+			var movieConn = new MovieDatabaseLayer (MoviePath);
+			var movies = movieConn.GetAllMovies ().ToArray();
+
+			Console.WriteLine ("Calculating {0} variances", movies.Count ());
+
+			Parallel.ForEach (movies, m =>
+			{
+				var sw = new Stopwatch();
+				sw.Start();
+				var variance = calculator.VarianceForMovie(m.Id);
+				sw.Stop();
+				var calculTime = sw.ElapsedMilliseconds;
+
+				sw = new Stopwatch();
+				sw.Start();
+				conn.Save(variance);
+				sw.Stop();
+
+				Console.WriteLine("{0} ({1}) : {2} (calculated in {3}ms, saved in {4}ms)", m.Title, m.Id, variance.Var, calculTime, sw.ElapsedMilliseconds);
+			});
+		} 
 
 		#endregion
 

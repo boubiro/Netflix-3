@@ -4,14 +4,21 @@ using System.Linq;
 
 namespace NetflixPrize
 {
-	public class SimilarityCalculator
-	{	
-		private ReviewDatabaseLayer<Review> _reviewsConnection;
-
-		public SimilarityCalculator(string dbPath)
+	public abstract class Calculator
+	{
+		protected ReviewDatabaseLayer<Review> _reviewsConnection;
+		
+		public Calculator(string dbPath)
 		{
 			_reviewsConnection = new ReviewDatabaseLayer<Review> (dbPath);
 		}	
+	}
+
+	public class SimilarityCalculator : Calculator
+	{	
+		public SimilarityCalculator(string dbPath) : base(dbPath)
+		{
+		}
 
 		public float CalculateForUser(int user1, int user2)
 		{			
@@ -60,23 +67,33 @@ namespace NetflixPrize
 			
 			return sim;	
 		}
+	}
+	
+	public sealed class VarianceCalculator : Calculator
+	{
+		private readonly VarianceConnection _varConnection;
 
-		public float VarianceForMovie(int movie)
+		public VarianceCalculator(string dbPath) : base(dbPath)
+		{
+			//_varConnection = new VarianceConnection (variancePath);
+		}
+
+		public Variance VarianceForMovie(int movie)
 		{	
-			int sum = 0;
+			double sum = 0;
 
 			var movieReviews = _reviewsConnection.GetReviewsByMovieId(movie).ToList();
-			var meanMovie = movieReviews.Sum(r => r.Note) / movieReviews.Count;
+			var meanMovie = (float)movieReviews.Sum(r => r.Note) / movieReviews.Count;
 
 			for (var i = 0; i< movieReviews.Count; i++) 
 			{
 				var diff = movieReviews[i].Note - meanMovie;
-				sum += diff*diff;
+				sum += Math.Pow (diff, 2);
 			}
 
 			var varMovie = (float)sum / movieReviews.Count;
 
-			return varMovie;
+			return new Variance { Id = movie, Var = varMovie };
 		}
 	}
 }

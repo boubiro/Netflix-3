@@ -28,15 +28,14 @@ public partial class MainWindow: Gtk.Window
 			// Save 
 		}
 		else 
-		{
-			
+		{			
 			var movieSim = new Similarity (int.Parse(id1Entry.Text), int.Parse(id2Entry.Text));
 			var calculator = new SimilarityCalculator (reviewTargetForQueryEntry.Text);
 			sim = movieSim.Sim = calculator.CalculateForMovie (movieSim.Id1, movieSim.Id2);
 
-			// Save 
+			// Save
 		}
 
-		resultTextbox.Text = sim.ToString ();;
+		resultTextbox.Text = sim.ToString ();
 	}
 }

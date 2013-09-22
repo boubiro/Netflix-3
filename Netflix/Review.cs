@@ -117,32 +117,6 @@ namespace Netflix
 			return Table<T>().Where(review => review.MovieId == movie);
 		}
 
-		public IEnumerable<int> GetCommonMovieIds(int user1, int user2)
-		{
-			return Query<int> (IntersectMoviesForUsersQuery, user1, user2);
-		}
-
-		public IEnumerable<int> GetCommonUsers(int movie1, int movie2)
-		{
-			return Query<int> (IntersectUsersForMoviesQuery, movie1, movie2);
-		}
-
-		public IEnumerable<Tuple<T, T>> GetCommonMovies(int user1, int user2)
-		{
-			var reviews1 = GetReviewsByUserId (user1).ToArray ();
-			var reviews2 = GetReviewsByUserId (user2).ToArray ();
-
-			foreach (var r in reviews1) 
-			{
-				var user2Review = reviews2.FirstOrDefault (r2 => r2.MovieId == r.MovieId);
-				if (user2Review != null) 
-				{
-					yield return new Tuple<T, T> (r, user2Review);
-				}
-			}
-		}
-
-
 		public void CleanTable()
 		{
 			DeleteAll<T>();
@@ -157,6 +131,48 @@ namespace Netflix
 		{
 			Insert(review);
 		}
+
+		#region Intersection
+
+		public IEnumerable<int> GetCommonMovieIds(int user1, int user2)
+		{
+			return Query<int> (IntersectMoviesForUsersQuery, user1, user2);
+		}
+
+		public IEnumerable<int> GetCommonUserIds(int movie1, int movie2)
+		{
+			return Query<int> (IntersectUsersForMoviesQuery, movie1, movie2);
+		}
+
+		public IEnumerable<Tuple<T, T>> GetCommonUsers(int movie1, int movie2)
+		{
+			var reviews1 = GetReviewsByMovieId (movie1);
+			var reviews2 = GetReviewsByMovieId(movie2);
+
+			return GetCommonReviews (reviews1, reviews2, (r, r2) => r.UserId == r2.UserId);
+		}
+
+		public IEnumerable<Tuple<T, T>> GetCommonMovies(int user1, int user2)
+		{
+			var reviews1 = GetReviewsByUserId (user1).ToArray ();
+			var reviews2 = GetReviewsByUserId (user2).ToArray ();
+
+			return GetCommonReviews (reviews1, reviews2, (r, r2) => r.MovieId == r2.MovieId);
+		}
+
+		private IEnumerable<Tuple<T, T>> GetCommonReviews(IEnumerable<T> reviews1, IEnumerable<T> reviews2, Func<T, T, bool> compare)
+		{
+			foreach (var r in reviews1) 
+			{
+				var user2Review = reviews2.FirstOrDefault (r2 => compare(r, r2));
+				if (user2Review != null) 
+				{
+					yield return new Tuple<T, T> (r, user2Review);
+				}
+			}
+		}
+
+		#endregion
 	}
 }
 

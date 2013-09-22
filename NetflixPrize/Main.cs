@@ -62,43 +62,19 @@ namespace NetflixPrize
 
 					//var movies = _reviewConnection.GetCommonMovies (id1, id2).ToArray ();
 
-					var movies = GetCommonMovies (id1, id2);
+					var movies = _reviewConnection.GetCommonMovies (id1, id2);
 
 					//sw.Stop ();
 
 					var moviesWithTitle = movies.Select (r => new {Title = _movieConnection.GetMovie (r.Item1.MovieId).Title, Id = r.Item1.MovieId});
 
 //					Console.WriteLine ("Found {0} common movies in {1}ms", movies.Count (), sw.ElapsedMilliseconds);
-					foreach (var movie in moviesWithTitle) {
+					foreach (var movie in moviesWithTitle) 
+					{
 						Console.WriteLine (" - {0} ({1})", movie.Title, movie.Id);
 					}
 
 					Console.ReadLine ();
-				}
-			}
-
-			private IEnumerable<Tuple<Review, Review>> GetCommonMovies(int user1, int user2)
-			{
-				var reviews1 = _reviewConnection.GetReviewsByUserId (user1).ToArray();
-				var reviews2 = _reviewConnection.GetReviewsByUserId (user2).ToArray();
-
-				if (!reviews1.Any ()) 
-				{
-					Console.WriteLine ("No movie for user {0}", user1);
-				}
-
-				if (!reviews2.Any ()) 
-				{
-					Console.WriteLine ("No movie for user {0}", user2);
-				}
-
-				foreach (var r in reviews1) 
-				{
-					var user2Review = reviews2.FirstOrDefault(r2 => r2.MovieId == r.MovieId);
-					if (user2Review != null)
-					{
-						yield return new Tuple<Review, Review> (r, user2Review);
-					}
 				}
 			}
 

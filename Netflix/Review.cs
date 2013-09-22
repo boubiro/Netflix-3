@@ -117,7 +117,7 @@ namespace Netflix
 			return Table<T>().Where(review => review.MovieId == movie);
 		}
 
-		public IEnumerable<int> GetCommonMovies(int user1, int user2)
+		public IEnumerable<int> GetCommonMovieIds(int user1, int user2)
 		{
 			return Query<int> (IntersectMoviesForUsersQuery, user1, user2);
 		}
@@ -126,6 +126,22 @@ namespace Netflix
 		{
 			return Query<int> (IntersectUsersForMoviesQuery, movie1, movie2);
 		}
+
+		public IEnumerable<Tuple<T, T>> GetCommonMovies(int user1, int user2)
+		{
+			var reviews1 = GetReviewsByUserId (user1).ToArray ();
+			var reviews2 = GetReviewsByUserId (user2).ToArray ();
+
+			foreach (var r in reviews1) 
+			{
+				var user2Review = reviews2.FirstOrDefault (r2 => r2.MovieId == r.MovieId);
+				if (user2Review != null) 
+				{
+					yield return new Tuple<T, T> (r, user2Review);
+				}
+			}
+		}
+
 
 		public void CleanTable()
 		{
